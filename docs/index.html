@@ -53,7 +53,7 @@
         <h2>Installation & Setup</h2>
         <pre><code>pip install scipy</code></pre>
         <p>Then, import the necessary module:</p>
-        <pre><code>from scipy.sparse import csr_matrix, csc_matrix, coo_matrix</code></pre>
+        <pre><code>from scipy.sparse import * </code></pre>
 
         <h2>What Are Sparse Matrices?</h2>
         <p>Sparse matrices store only non-zero values, reducing memory usage. They are useful in:</p>
@@ -64,7 +64,7 @@
         </ul>
 
         <h2>SciPy Sparse Matrix Formats</h2>
-        <h3>Compressed Sparse Row (CSR)</h3>
+        <h3>1. Compressed Sparse Row (CSR)</h3>
         <pre><code>from scipy.sparse import csr_matrix
 import numpy as np
 
@@ -72,18 +72,46 @@ dense_matrix = np.array([[0, 0, 3], [4, 0, 0], [0, 5, 0]])
 sparse_csr = csr_matrix(dense_matrix)
 print(sparse_csr)</code></pre>
 
-        <h3>Compressed Sparse Column (CSC)</h3>
+        <h3>2. Compressed Sparse Column (CSC)</h3>
         <pre><code>from scipy.sparse import csc_matrix
 sparse_csc = csc_matrix(dense_matrix)
 print(sparse_csc)</code></pre>
 
-        <h3>Coordinate List (COO)</h3>
+        <h3>3. Coordinate List (COO)</h3>
         <pre><code>from scipy.sparse import coo_matrix
 rows = np.array([0, 1, 2])
 cols = np.array([2, 0, 1])
 values = np.array([3, 4, 5])
 sparse_coo = coo_matrix((values, (rows, cols)))
 print(sparse_coo)</code></pre>
+
+        <h3>4. Dictionary of Keys (DOK)</h3>
+        <pre><code>from scipy.sparse import dok_matrix
+sparse_dok = dok_matrix((3, 3), dtype=np.int8)
+sparse_dok[0, 2] = 3
+sparse_dok[1, 0] = 4
+sparse_dok[2, 1] = 5
+print(sparse_dok)</code></pre>
+
+        <h3>5. List of Lists (LIL)</h3>
+        <pre><code>from scipy.sparse import lil_matrix
+sparse_lil = lil_matrix((3, 3), dtype=np.int8)
+sparse_lil[0, 2] = 3
+sparse_lil[1, 0] = 4
+sparse_lil[2, 1] = 5
+print(sparse_lil)</code></pre>
+
+        <h3>6. Block Sparse Row (BSR)</h3>
+        <pre><code>from scipy.sparse import bsr_matrix
+sparse_bsr = bsr_matrix(sparse_csr)
+print(sparse_bsr)</code></pre>
+
+        <h3>7. Sparse Diagonal (DIA)</h3>
+        <pre><code>from scipy.sparse import dia_matrix
+data = np.array([[1, 2, 3], [4, 5, 6]])
+offsets = np.array([0, -1])
+sparse_dia = dia_matrix((data, offsets), shape=(3, 3))
+print(sparse_dia)</code></pre>
 
         <h2>Converting Between Formats</h2>
         <pre><code>sparse_csr = sparse_coo.tocsr()
@@ -127,3 +155,5 @@ plt.show()</code></pre>
     </div>
 </body>
 </html>
+
+
