@@ -1,114 +1,129 @@
-```
-    <h2>Introduction</h2>
-    <p>Efficient storage and computation are critical when dealing with large datasets. <strong>SciPy’s sparse module (<code>scipy.sparse</code>)</strong> provides specialized data structures and algorithms for handling sparse matrices—matrices that contain mostly zero values.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efficient Sparse Matrices with SciPy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: "Courier New", monospace;
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Efficient Sparse Matrices with SciPy</h1>
 
-    <h2>Installation & Setup</h2>
-    <pre><code>pip install scipy</code></pre>
-    <p>Then, import the necessary module:</p>
-    <pre><code>from scipy.sparse import * </code></pre>
+        <h2>Introduction</h2>
+        <p>Efficient storage and computation are critical when dealing with large datasets. <strong>SciPy’s sparse module (<code>scipy.sparse</code>)</strong> provides specialized data structures and algorithms for handling sparse matrices—matrices that contain mostly zero values.</p>
 
-    <h2>What Are Sparse Matrices?</h2>
-    <p>Sparse matrices store only non-zero values, reducing memory usage. They are useful in:</p>
-    <ul>
-        <li>Graph representation</li>
-        <li>Machine learning (e.g., TF-IDF matrices)</li>
-        <li>Physics and engineering simulations</li>
-    </ul>
+        <h2>Installation & Setup</h2>
+        <pre><code>pip install scipy</code></pre>
+        <p>Then, import the necessary module:</p>
+        <pre><code>from scipy.sparse import csr_matrix, csc_matrix, coo_matrix</code></pre>
 
-    <h2>SciPy Sparse Matrix Formats</h2>
-    <h3>1. Compressed Sparse Row (CSR)</h3>
-    <p>CSR is an efficient format for row-based operations. It stores three arrays: values, column indices, and row pointers.</p>
-    <pre><code>from scipy.sparse import csr_matrix
+        <h2>What Are Sparse Matrices?</h2>
+        <p>Sparse matrices store only non-zero values, reducing memory usage. They are useful in:</p>
+        <ul>
+            <li>Graph representation</li>
+            <li>Machine learning (e.g., TF-IDF matrices)</li>
+            <li>Physics and engineering simulations</li>
+        </ul>
+
+        <h2>SciPy Sparse Matrix Formats</h2>
+        <h3>Compressed Sparse Row (CSR)</h3>
+        <pre><code>from scipy.sparse import csr_matrix
 import numpy as np
 
-dense_matrix = np.array([[0, 0, 3], [4, 0, 0], [0, 5, 0]]) 
-sparse_csr = csr_matrix(dense_matrix) 
+dense_matrix = np.array([[0, 0, 3], [4, 0, 0], [0, 5, 0]])
+sparse_csr = csr_matrix(dense_matrix)
 print(sparse_csr)</code></pre>
 
-    <h3>2. Compressed Sparse Column (CSC)</h3>
-    <p>CSC is similar to CSR but optimized for column-based operations.</p>
-    <pre><code>from scipy.sparse import csc_matrix
-sparse_csc = csc_matrix(dense_matrix) 
+        <h3>Compressed Sparse Column (CSC)</h3>
+        <pre><code>from scipy.sparse import csc_matrix
+sparse_csc = csc_matrix(dense_matrix)
 print(sparse_csc)</code></pre>
 
-    <h3>3. Coordinate List (COO)</h3>
-    <p>COO is a simple format storing row indices, column indices, and values.</p>
-    <pre><code>from scipy.sparse import coo_matrix
-rows = np.array([0, 1, 2]) 
-cols = np.array([2, 0, 1]) 
-values = np.array([3, 4, 5]) 
-sparse_coo = coo_matrix((values, (rows, cols))) 
+        <h3>Coordinate List (COO)</h3>
+        <pre><code>from scipy.sparse import coo_matrix
+rows = np.array([0, 1, 2])
+cols = np.array([2, 0, 1])
+values = np.array([3, 4, 5])
+sparse_coo = coo_matrix((values, (rows, cols)))
 print(sparse_coo)</code></pre>
 
-    <h3>4. Dictionary of Keys (DOK)</h3>
-    <p>DOK uses a dictionary to store non-zero values, making it efficient for dynamic updates.</p>
-    <pre><code>from scipy.sparse import dok_matrix
-sparse_dok = dok_matrix((3, 3), dtype=np.int8) 
-sparse_dok[0, 2] = 3 
-sparse_dok[1, 0] = 4 
-sparse_dok[2, 1] = 5 
-print(sparse_dok)</code></pre>
-
-    <h3>5. List of Lists (LIL)</h3>
-    <p>LIL stores rows as Python lists, making it efficient for incremental construction.</p>
-    <pre><code>from scipy.sparse import lil_matrix
-sparse_lil = lil_matrix((3, 3), dtype=np.int8) 
-sparse_lil[0, 2] = 3 
-sparse_lil[1, 0] = 4 
-sparse_lil[2, 1] = 5 
-print(sparse_lil)</code></pre>
-
-    <h3>6. Block Sparse Row (BSR)</h3>
-    <p>BSR is similar to CSR but stores data in fixed-size blocks, useful for structured matrices.</p>
-    <pre><code>from scipy.sparse import bsr_matrix
-sparse_bsr = bsr_matrix(sparse_csr) 
-print(sparse_bsr)</code></pre>
-
-    <h3>7. Sparse Diagonal (DIA)</h3>
-    <p>DIA stores diagonals of a matrix, making it efficient for banded matrices.</p>
-    <pre><code>from scipy.sparse import dia_matrix
-data = np.array([[1, 2, 3], [4, 5, 6]]) 
-offsets = np.array([0, -1]) 
-sparse_dia = dia_matrix((data, offsets), shape=(3, 3)) 
-print(sparse_dia)</code></pre>
-
-    <h2>Converting Between Formats</h2>
-    <pre><code>sparse_csr = sparse_coo.tocsr()
+        <h2>Converting Between Formats</h2>
+        <pre><code>sparse_csr = sparse_coo.tocsr()
 sparse_csc = sparse_csr.tocsc()</code></pre>
 
-    <h2>Screenshots</h2>
-    <p>To visualize the sparse matrices, use <code>matplotlib</code>:</p>
-    <pre><code>import matplotlib.pyplot as plt
+        <h2>Screenshots</h2>
+        <p>To visualize the sparse matrices, use <code>matplotlib</code>:</p>
+        <pre><code>import matplotlib.pyplot as plt
 from scipy.sparse import random
 
-sparse_matrix = random(10, 10, density=0.2, format='csr') 
-plt.spy(sparse_matrix) 
+sparse_matrix = random(10, 10, density=0.2, format='csr')
+plt.spy(sparse_matrix)
 plt.show()</code></pre>
+        <div class="screenshot">
+            <img src="sparse_matrix_example.png" alt="Sparse Matrix Visualization">
+        </div>
 
-    <h2>Use Cases</h2>
-    <ul>
-        <li><strong>Machine Learning:</strong> Storing TF-IDF matrices</li>
-        <li><strong>Graph Theory:</strong> Large adjacency matrices</li>
-        <li><strong>Scientific Computing:</strong> Simulating physical systems</li>
-    </ul>
+        <h2>Use Cases</h2>
+        <ul>
+            <li><strong>Machine Learning:</strong> Storing TF-IDF matrices</li>
+            <li><strong>Graph Theory:</strong> Large adjacency matrices</li>
+            <li><strong>Scientific Computing:</strong> Simulating physical systems</li>
+        </ul>
 
-    <h2>Benefits of Using <code>scipy.sparse</code></h2>
-    <ul>
-        <li><strong>Memory efficiency:</strong> Stores only non-zero values.</li>
-        <li><strong>Faster computations:</strong> Optimized for sparse data.</li>
-        <li><strong>Flexible storage formats:</strong> Choose the best format for your needs.</li>
-    </ul>
+        <h2>Benefits of Using <code>scipy.sparse</code></h2>
+        <ul>
+            <li><strong>Memory efficiency:</strong> Stores only non-zero values.</li>
+            <li><strong>Faster computations:</strong> Optimized for sparse data.</li>
+            <li><strong>Flexible storage formats:</strong> Choose the best format for your needs.</li>
+        </ul>
 
-    <h2>Conclusion</h2>
-    <p>`scipy.sparse` is essential for handling large, sparse datasets efficiently. Understanding different sparse formats can improve memory usage and computation speed in applications like graph theory and machine learning.</p>
+        <h2>Conclusion</h2>
+        <p>`scipy.sparse` is essential for handling large, sparse datasets efficiently. Understanding different sparse formats can improve memory usage and computation speed in applications like graph theory and machine learning.</p>
 
-    <h2>References & Further Reading</h2>
-    <ul>
-        <li><a href="https://docs.scipy.org/doc/scipy/reference/sparse.html">SciPy Sparse Documentation</a></li>
-        <li><a href="https://scipy.org/">SciPy Official Website</a></li>
-        <li><a href="https://matplotlib.org/stable/users/prev_whats_new/whats_new_3.1.0.html#spy-visualization-for-sparse-matrices">Matplotlib `spy()` Function</a></li>
-    </ul>
-</div>
-```
-
-
+        <h2>References & Further Reading</h2>
+        <ul>
+            <li><a href="https://docs.scipy.org/doc/scipy/reference/sparse.html">SciPy Sparse Documentation</a></li>
+            <li><a href="https://scipy.org/">SciPy Official Website</a></li>
+            <li><a href="https://matplotlib.org/stable/users/prev_whats_new/whats_new_3.1.0.html#spy-visualization-for-sparse-matrices">Matplotlib `spy()` Function</a></li>
+        </ul>
+    </div>
+</body>
+</html>
