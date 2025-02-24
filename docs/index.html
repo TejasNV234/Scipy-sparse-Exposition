@@ -43,17 +43,32 @@
         <h1>Efficient Sparse Matrices with Scipy</h1>
 
         <h2>Introduction</h2>
-            <p>Efficient storage and computation are critical when dealing with large datasets. <strong>SciPy’s sparse module (<code>scipy.sparse</code>)</strong> provides specialized data structures and algorithms for handling sparse matrices—matrices that contain mostly zero values.</p>
+        <p>Here's the thing: Real-world data is often riddled with missing or irrelevant values. Take recommendation systems, for example—thousands of users interact with millions of products, but each user engages with only a tiny fraction of them. This results in a sparse matrix/dataset, where most entries are zeros (indicating no interaction).
 
+Sparse datasets are everywhere! Whether it’s text data (where documents contain only a few words from a massive vocabulary), user-item recommendation systems, or even bioinformatics (where only specific genes are active in gene expression data), dealing with sparsity is more common than you might expect.</p>
+
+        <p>As you might expect there's lots of room to improve efficiency when it comes to sparse datasets. <strong>SciPy’s sparse module (<code>scipy.sparse</code>)</strong> provides specialized data structures and algorithms for handling sparse matrices—matrices that contain mostly zero values.</p>
+        <h2>Practical Applications</h2>
+        <p>Now, before we get into the technical stuff lets look into the areas where we see a lot of sparse matrices</p>
+        <h3>Recommendation Systems: </h3>
+        <p>This seems obvious once you read the next line.<br>Here's why: Among the thousands of available movies, most users will rate only a few.<br>Let’s consider an example: <br>Imagine we have a User-Movie Rating Matrix, where rows represent users, columns represent movies, and the values indicate ratings given by users.</p>
+        <img src="recommendationSystems.png" alt="Recommendation Systems example" width="550" height="150" style="display: block; margin: auto;">        
+        <p>Here, you can see that users rate only a few movies. This creates a sparse matrix, where most of the values are zeros, indicating no interaction between users and certain movies.</p>
+
+        <h3>BioInformatics: </h3>
+        <p>In bioinformatics, dealing with sparse data is common. For instance, when studying gene expression, not all genes are active in every tissue or condition. This results in a dataset where most values are zeros, indicating no expression.</p>
+        <img src="BioInformatics.png" alt="BioInformatics example" width="550" height="150" style="display: block; margin: auto;">
+        <p>Take a look at the example above: each row represents a gene, and each column represents a condition. Since only a few genes are expressed in each condition, the matrix is mostly filled with zeros, making it a prime example of sparsity in biological data.</p>
         <h2>Installation and Setup</h2>
             <pre><code class="language-python">pip install scipy</code></pre>
             <p>Then you can import the sparse modules</p>
             <pre><code class="language-python">from scipy.sparse import ...</code></pre>
 
-        <h2>What are Sparse Matrices</h2>
-            <p>Sparse matrices are matrices where most elements are zero. Instead of storing every element, sparse matrices store only non-zero values and their positions.</p>
+        <h2>Storing Sparse Matrices</h2>
+        <p>Imagine you have a huge dataset with mostly zero values, if you are working with python it will allocate memory for the zeroes as well, now that's a huge waste.</p>
+        <p>What's worse is that, many operations like matrix multiplication work with all those zeroes as well, when we can just ignore them.<br>That brings us to the core of this problem: <strong>How do I store only the non-zero values and ignore the 0's</strong><br>Scipy provides four formats based on the kind of operations you want to perform. CSC and CSR are mostly better than COO, since COO is mostly used to build sparse matrices and BSR is only used on a narrow types of datasets. There are many more types of sparse matrices Scipy provides to build sparse matrices.<br>The Types of formats in which Scipy can store sparse matrices are: </p>
 
-     <h2>Compressed Sparse Row (CSR) Format</h2>
+     <h3>1. Compressed Sparse Row (CSR) Format</h3>
     <p>CSR is very efficient for row based operations, such as slicing and matrix multiplication.</p>
     <p>Storage Structure:</p>
 
@@ -83,7 +98,7 @@ Array[1:2] = [4]    # Second Row Element
 Array[2:3] = [5]    # Third Row Element
     </code></pre>
     <p>Since we already know the column indices, we reconstruct the matrix efficiently.</p>
-    <h2>2. Compressed Sparse Column (CSC)</h2>
+    <h3>2. Compressed Sparse Column (CSC)</h3>
     <p>Similar to CSR but stores data column-wise.</p>
     <pre><code class="language-python">
 Values:           [4, 5, 3]
@@ -91,7 +106,7 @@ Row Indices:      [1, 2, 0]
 Column Pointers:  [0, 1, 2, 3]
     </code></pre>
 
-    <h2>3. Coordinate List (COO)</h2>
+    <h3>3. Coordinate List (COO)</h3>
     <p>Stores matrix elements as a list of (row, column, value) tuples.</p>
     <pre><code class="language-python">
 (row, col): value
@@ -99,28 +114,7 @@ Column Pointers:  [0, 1, 2, 3]
 (1, 0): 4
 (2, 1): 5
     </code></pre>
-
-    <h2>4. Dictionary of Keys (DOK)</h2>
-    <p>Stores non-zero elements as a dictionary.</p>
-    <pre><code class="language-python">
-{
-    (0, 2): 3,
-    (1, 0): 4,
-    (2, 1): 5
-}
-    </code></pre>
-
-    <h2>5. List of Lists (LIL)</h2>
-    <p>Stores each row as a list of column-value pairs.</p>
-    <pre><code class="language-python">
-[
-    [ (2, 3) ],    # Row 0
-    [ (0, 4) ],    # Row 1
-    [ (1, 5) ]     # Row 2
-]
-    </code></pre>
-
-    <h2>6. Block Sparse Row (BSR)</h2>
+    <h3>4. Block Sparse Row (BSR)</h3>
     <p>BSR stores non-zero values in blocks rather than individual elements. It is useful for structured matrices, such as those in physics and engineering simulations.</p>
     <pre><code class="language-python">
 Matrix = [1, 2, 0, 0]
@@ -137,6 +131,71 @@ Blocks:
 Block Indices:  [0, 1]      # Just like Row Indice and Column Pointer
 Block Pointers: [0, 1, 2]
     </code></pre>
+    <h2>Formats for Conatructing Sparse Matrices</h2>
+    <p>COO also helps in constructing sparse matrices.</p>
+    <h3>1. Dictionary of Keys (DOK)</h3>
+    <p>Stores non-zero elements as a dictionary.</p>
+    <pre><code class="language-python">
+{
+    (0, 2): 3,
+    (1, 0): 4,
+    (2, 1): 5
+}
+    </code></pre>
+
+    <h3>2. List of Lists (LIL)</h3>
+    <p>Stores each row as a list of column-value pairs.</p>
+    <pre><code class="language-python">
+[
+    [ (2, 3) ],    # Row 0
+    [ (0, 4) ],    # Row 1
+    [ (1, 5) ]     # Row 2
+]
+    </code></pre>
+    
+    <h2>Code Example in Python</h2>
+    <pre><code class="language-python">import numpy as np
+from scipy.sparse import coo_matrix, csr_matrix, csc_matrix
+
+# Define a simple 5x5 matrix
+data = np.array([3, 4, 5])
+rows = np.array([0, 1, 3])
+cols = np.array([0, 2, 4])
+
+# Create a COO sparse matrix
+coo = coo_matrix((data, (rows, cols)), shape=(5, 5))
+print("COO format:\n", coo)
+
+# Convert to CSR format
+csr = coo.tocsr()
+print("\nCSR format:\n", csr)
+
+# Convert to CSC format
+csc = coo.tocsc()
+print("\nCSC format:\n", csc)
+    </code></pre>
+    <p>So you can see that we only store the non-zero values and hence increase storage efficiency and decease computation time.</p>
+
+    <h3>Operations on Sparse matrices</h3>
+    <pre><code class="language-python"># Create two sparse matrices
+sparse_matrix_1 = csr_matrix([[0, 0, 3], [1, 0, 0], [0, 2, 0]])
+sparse_matrix_2 = csr_matrix([[0, 1, 0], [2, 0, 0], [0, 0, 4]])
+
+# Perform matrix multiplication
+result = sparse_matrix_1.dot(sparse_matrix_2)
+print("Result of multiplication:\n", result)
+    </code></pre>
+    <p>Here instead of wasting resources on zeroes as well we only work with meaningful values.</p>
+
+    <h2>Conclusion</h2>
+    <p>Sparse datasets are not only common but crucial in many fields like recommendation systems, and bioinformatics. Understanding how to efficiently store, manipulate, and build machine learning models on these datasets can make a huge difference in both performance and accuracy.<br>And Remember: <strong>Less is more when it comes to sparsity!</strong></p>
+
+    <h2>References</h2>
+    <ul>
+    <li><a href="https://docs.scipy.org/doc/scipy/reference/sparse.html">SciPy Sparse Documentation</a></li>
+    <li><a href="https://scipy.org/">SciPy Official Website</a></li>
+    <li><a href="https://medium.com/we-talk-data/explaining-sparse-datasets-with-practical-examples-dead60c2c3b7#:~:text=A%20sparse%20dataset%20is%20essentially,empty%20seats%20are%20the%20zeros.">Explaining Sparse Datasets with Practical Examples></a></li>
+    <ul>
 </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
