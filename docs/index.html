@@ -32,13 +32,28 @@
         code {
             font-family: "Courier New", monospace;
         }
+        .corner-details {
+            position: fixed; /* Stays fixed when scrolling */
+            bottom: 10px;  /* Distance from bottom */
+            right: 10px;   /* Distance from right */
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
 </head>
 
 <body>
-    
+<div class="corner-details">
+    <p><strong>Group Code: J062</strong></p>
+    <p>&nbsp;&nbsp; Tejas N Vijapur<br>&nbsp;&nbsp;  Neel Jadhao<br>&nbsp;&nbsp;  Harshit Mittal</p>
+
+</div>    
 <div class="container">
         <h1>Efficient Sparse Matrices with Scipy</h1>
 
@@ -172,11 +187,23 @@ print("\nCSR format:\n", csr)
 
 # Convert to CSC format
 csc = coo.tocsc()
-print("\nCSC format:\n", csc)
-    </code></pre>
+print("\nCSC format:\n", csc)</code></pre>
 
     <p>The Output of the code above is: </p>
-    <img src="codeExample2.png" alt="Code Example Output" width="150" height="220" style="display: block; margin: auto;">
+    <pre><code class="language-python">COO format:
+   (0, 0)	3
+  (1, 2)	4
+  (3, 4)	5
+
+CSR format:
+   (0, 0)	3
+  (1, 2)	4
+  (3, 4)	5
+
+CSC format:
+   (0, 0)	3
+  (1, 2)	4
+  (3, 4)	5</code></pre>
     <p>So you can see that we only store the non-zero values and hence increase storage efficiency and decease computation time.</p>
 
     <h3>Operations on Sparse matrices</h3>
@@ -189,7 +216,10 @@ result = sparse_matrix_1.dot(sparse_matrix_2)
 print("Result of multiplication:\n", result)
     </code></pre>
     <p>The Output of the code above is: </p>
-    <img src="operation.png" alt="Operations Output" width="550" height="250" style="display: block; margin: auto;">
+    <pre><code class="language-python">Result of multiplication:
+   (0, 2)	12
+  (1, 1)	1
+  (2, 0)	4</code></pre>
     <p>Here instead of wasting resources on zeroes as well we only work with meaningful values.</p>
 
     <h2>Conclusion</h2>
